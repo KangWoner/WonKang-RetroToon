@@ -1,4 +1,4 @@
-{
+﻿{
   "compilerOptions": {
     "rootDir": "src",
     "outDir": "dist",
@@ -7,7 +7,8 @@
     "module": "commonjs",
     "target": "es2020",
     "strict": true,
-    "types": ["node"]          // (Jest는 빌드에서 제외하므로 node만)
+    "types": ["node", "jest"] 
   },
-  "exclude": ["node_modules", "dist", "**/*.test.ts", "**/__tests__/**"]
+  "include": ["src/**/*.ts"],                              
+  "exclude": ["node_modules", "dist", "**/*.test.ts", "**/__tests__/**"]  
 }
