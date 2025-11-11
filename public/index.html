@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RetroToon - Transform Photos to Retro Anime Art</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <h1 class="title">🎨 RetroToon</h1>
+      <p class="subtitle">Transform your photos into nostalgic retro anime artwork</p>
+    </header>
+
+    <main class="main">
+      <div class="upload-section">
+        <div class="upload-box" id="uploadBox">
+          <div class="upload-icon">📸</div>
+          <p class="upload-text">Click or drag a photo here</p>
+          <p class="upload-hint">Supports: JPEG, PNG, WebP (max 10MB)</p>
+          <input type="file" id="fileInput" accept="image/jpeg,image/jpg,image/png,image/webp" hidden>
+        </div>
+
+        <div class="style-selector">
+          <label class="style-label">Choose your retro style:</label>
+          <div class="style-options">
+            <button class="style-btn active" data-style="80s">
+              <span class="style-emoji">✨</span>
+              <span class="style-name">80s Style</span>
+              <span class="style-desc">Vibrant & Bold</span>
+            </button>
+            <button class="style-btn" data-style="90s">
+              <span class="style-emoji">🌸</span>
+              <span class="style-name">90s Style</span>
+              <span class="style-desc">Soft & Dreamy</span>
+            </button>
+          </div>
+        </div>
+
+        <button class="convert-btn" id="convertBtn" disabled>
+          <span id="btnText">Transform to Retro Anime ✨</span>
+          <span id="btnLoader" class="loader" hidden>Converting...</span>
+        </button>
+      </div>
+
+      <div class="result-section" id="resultSection" hidden>
+        <h2 class="result-title">Your Retro Anime Artwork 🎉</h2>
+        <div class="result-image-container">
+          <img id="resultImage" class="result-image" alt="Converted retro anime image">
+        </div>
+        <div class="result-actions">
+          <a id="downloadBtn" class="download-btn" download="retro-anime.jpg">
+            📥 Download Image
+          </a>
+          <button class="reset-btn" id="resetBtn">
+            🔄 Convert Another Photo
+          </button>
+        </div>
+      </div>
+
+      <div class="error-message" id="errorMessage" hidden></div>
+    </main>
+
+    <footer class="footer">
+      <p>Made with ❤️ for retro anime fans | Transform your memories into art</p>
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
