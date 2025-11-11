@@ -26,48 +26,59 @@ export async function convertToRetroAnime(
   outputPath: string,
   options: TransformOptions
 ): Promise<string> {
-  const { style, quality = 85 } = options;
+  try {
+    const { style, quality = 85 } = options;
 
-  // Load the image
-  const image = sharp(inputPath);
-  const metadata = await image.metadata();
+    // Load the image with error handling
+    const image = sharp(inputPath);
+    const metadata = await image.metadata();
 
-  // Apply retro anime effects based on style
-  let processed = image;
+    if (!metadata.width || !metadata.height) {
+      throw new Error('Invalid image: unable to read dimensions');
+    }
 
-  if (style === '80s') {
-    // 80s style: High contrast, vibrant colors, slight blur
+    // Apply retro anime effects based on style
+    let processed = image;
+
+    if (style === '80s') {
+      // 80s style: High contrast, vibrant colors, slight blur
+      processed = processed
+        .modulate({
+          brightness: 1.1,
+          saturation: 1.4,
+          hue: 10,
+        })
+        .sharpen({ sigma: 0.5 })
+        .gamma(1.2);
+    } else if (style === '90s') {
+      // 90s style: Softer colors, slightly washed out look
+      processed = processed
+        .modulate({
+          brightness: 1.05,
+          saturation: 1.2,
+          hue: -5,
+        })
+        .blur(0.3)
+        .gamma(1.1);
+    }
+
+    // Apply vintage effect (common to both styles)
     processed = processed
-      .modulate({
-        brightness: 1.1,
-        saturation: 1.4,
-        hue: 10,
-      })
-      .sharpen({ sigma: 0.5 })
-      .gamma(1.2);
-  } else if (style === '90s') {
-    // 90s style: Softer colors, slightly washed out look
-    processed = processed
-      .modulate({
-        brightness: 1.05,
-        saturation: 1.2,
-        hue: -5,
-      })
-      .blur(0.3)
-      .gamma(1.1);
+      .tint({ r: 255, g: 240, b: 220 }) // Warm tint
+      .linear(0.9, 10); // Reduce contrast slightly
+
+    // Save the processed image with error handling
+    await processed
+      .jpeg({ quality })
+      .toFile(outputPath);
+
+    return outputPath;
+  } catch (error) {
+    console.error('Error in convertToRetroAnime:', error);
+    throw new Error(
+      `Failed to convert image: ${error instanceof Error ? error.message : 'Unknown error'}`
+    );
   }
-
-  // Apply vintage effect (common to both styles)
-  processed = processed
-    .tint({ r: 255, g: 240, b: 220 }) // Warm tint
-    .linear(0.9, 10); // Reduce contrast slightly
-
-  // Save the processed image
-  await processed
-    .jpeg({ quality })
-    .toFile(outputPath);
-
-  return outputPath;
 }
 
 /**

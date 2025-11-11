@@ -2,15 +2,22 @@ import { Router } from 'express';
 import type { Request, Response } from 'express';
 import multer from 'multer';
 import path from 'path';
+import { fileURLToPath } from 'url';
 import { convertToRetroAnime, deleteFile, isValidImageType } from '../services/imageProcessor.js';
 import type { RetroStyle } from '../services/imageProcessor.js';
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 const router = Router();
+
+// Configure uploads directory with absolute path
+const uploadsDir = path.join(__dirname, '..', '..', 'uploads');
 
 // Configure multer for file uploads
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, 'uploads/');
+    cb(null, uploadsDir);
   },
   filename: (req, file, cb) => {
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
@@ -52,7 +59,8 @@ router.post('/convert', upload.single('image'), async (req: Request, res: Respon
     }
 
     const inputPath = req.file.path;
-    const outputPath = `uploads/retro-${Date.now()}${path.extname(req.file.originalname)}`;
+    const outputFilename = `retro-${Date.now()}${path.extname(req.file.originalname)}`;
+    const outputPath = path.join(uploadsDir, outputFilename);
 
     // Convert the image
     await convertToRetroAnime(inputPath, outputPath, { style });
@@ -64,7 +72,7 @@ router.post('/convert', upload.single('image'), async (req: Request, res: Respon
     res.json({
       success: true,
       message: 'Image converted successfully',
-      imageUrl: `/${outputPath}`,
+      imageUrl: `/uploads/${outputFilename}`,
       style,
     });
   } catch (error) {
