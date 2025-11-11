@@ -1,369 +1,92 @@
-# CLAUDE.md
+# Claude.md - AI 노동력 확장 정책 및 핵심 프로세스
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+## 1. 🏛️ 우리의 철학: 확장 가능한 설계를 위한 원칙
 
-## Project Overview
+우리는 '작동하는' 코드가 아니라 '확장 가능하고(scalable) 유지보수하기 쉬운(maintainable)' 코드를 작성합니다. 당신의 모든 작업은 이 철학을 따라야 합니다.
 
-**WonKang-RetroToon** is an AI-powered image transformation service that converts user photos into retro-style anime artwork. Users upload their photos, and the application analyzes the person's appearance and mood to generate nostalgic, vintage-inspired anime illustrations.
+* **토큰 제한을 인식하십시오:** 우리는 모든 파일을 한 번에 모델에 넣을 수 없습니다. 이는 AI가 마법이 아니며 근본적인 한계(토큰 제한)를 가지고 있음을 의미합니다.
+* **설계가 가장 중요합니다:** 이 한계 때문에, 좋은 소프트웨어 설계(모듈화, 단일 책임 원칙)는 그 어느 때보다 중요합니다.
+* **파급 효과(Ripple Effects)를 피하십시오:** 변경 사항은 가능한 한 적은 수의 파일에 국한되어야 합니다. 복잡한 의존성이나 '스파게티 코드'는 AI 노동력의 효율성을 저해합니다.
+* **프로젝트 구조가 곧 맥락입니다:** 당신이 작업을 시작할 때, 프로젝트의 폴더와 파일 구조는 그 자체로 가장 '토큰 효율적인' 맥락(context)입니다.
+* **표준을 따르십시오:** `store`, `slices`, `reducers`와 같은 표준적인 이름 지정 규칙은 당신이 추가 설명(토큰) 없이도 아키텍처를 즉시 파악하게 돕습니다. '괴상한 커스텀 네이밍(kooky custom naming)'은 우리의 확장성을 방해하는 적입니다.
 
-### Project Vision
-- Transform modern photos into retro anime art styles (1980s-1990s aesthetic)
-- Capture the subject's personality and mood in the artistic transformation
-- Provide high-quality, authentic retro anime visuals
+## 2. ⚙️ 핵심 작업 프로세스: 스스로 피드백하는 루프
 
-### Current Status
-**Fully functional web service!** The application includes:
-- Express web server with RESTful API
-- File upload and image processing pipeline
-- Retro anime style transformation (80s & 90s styles)
-- Modern, responsive web interface
-- Sharp-based image processing with vintage effects
+우리는 당신이 저지른 기본적인 실수를 인간(CEO)이 찾아내길 원하지 않습니다. 인간이 당신의 '손, 눈, 귀'가 되는 순간, 우리는 병목 현상에 부딪힙니다.
 
-## Development Commands
+따라서, **모든 작업**은 다음의 '자동화된 피드백 루프'를 따라야 합니다.
 
-### Basic Commands
+1.  **브랜치 생성:** 모든 신규 작업은 **반드시** 새로운 Git 기능 브랜치(feature branch)에서 시작하십시오.
+2.  **탐색 및 매핑:** 프롬프트의 요구사항을 프로젝트 구조에 매핑(mapping)하십시오. 작업에 필요한 관련 파일을 '스스로 발견'해야 합니다.
+3.  **코드 작성 및 테스트 작성:** 새로운 기능을 작성할 때, **반드시** 그에 상응하는 테스트 케이스를 함께 작성하십시오.
+4.  **자체 검증 (커밋 전 필수 단계):** 코드를 커밋하기 전, 당신은 '스스로 루프를 돌며' 피드백을 구해야 합니다.
+    * **a. 컴파일:** 코드를 컴파일하십시오.
+    * **b. 테스트:** **모든** 자동화된 테스트(unit, integration)를 실행하고 100% 통과하는지 확인하십시오.
+5.  **커밋:** 이 검증 루프를 통과한 후에만, 명확한 커밋 메시지와 함께 코드를 커밋하십시오. 테스트가 실패한 '형편없는 코드(junky code)'는 절대 커밋되어서는 안 됩니다.
 
-```bash
-# Install dependencies (run this first)
-npm install
+## 3. 🤝 인간 피드백 루프 (예외 처리)
 
-# Development mode (auto-reload on file changes)
-npm run dev
+모든 것을 자동화할 수는 없습니다. 때로 인간(CEO)이 개입하여 자동화된 테스트가 찾지 못하는 주관적인 피드백을 제공할 것입니다.
 
-# Build the project (compiles TypeScript to dist/)
-npm run build
+* **인간은 '손, 눈, 귀'입니다:** CEO가 UI를 직접 테스트하다가 오류를 발견할 수 있습니다 (예: "비용 추가 버튼 클릭 시 앱이 중단됨").
+* **맥락을 흡수하십시오:** 이때 인간이 제공하는 피드백(오류 메시지, 스크린샷, 발생 상황)은 당신이 실수를 수정하는 데 필요한 '결정적인 맥락(critical context)'입니다.
+* **즉시 수정하십시오:** 이 피드백을 학습의 기회로 삼아, 즉시 오류를 수정하고 다시 2단계(핵심 작업 프로세스)를 수행하십시오.
+* **최소화가 목표입니다:** 우리의 궁극적인 목표는 인간이 '손, 눈, 귀'로 개입하는 이 수동 루프를 '최소화'하고, 가능한 모든 것을 2단계의 '자동화된 루프'로 전환하는 것입니다.
 
-# Start the production server (requires build first)
-npm start
+## 4. 📋 프로젝트 정보: RetroToon
 
-# Run all tests
-npm test
+### 프로젝트 개요
+**WonKang-RetroToon**은 사용자의 사진을 복고풍 애니메이션 아트워크로 변환하는 AI 기반 이미지 변환 서비스입니다.
 
-# Lint TypeScript files
-npm run lint
-```
+### 기술 스택
+- **Backend**: Node.js, Express, TypeScript
+- **Image Processing**: Sharp library
+- **Frontend**: Vanilla JavaScript, HTML5, CSS3
+- **Testing**: Jest
+- **Build**: TypeScript Compiler (tsc)
 
-**Access the web interface:**
-- Open http://localhost:3000 in your browser
-- Upload a photo and select a retro style (80s or 90s)
-- Download your transformed retro anime artwork!
-
-### Development Workflow
-
-```bash
-# Start development server with hot reload
-npm run dev
-
-# Run specific test file
-npm test -- src/services/imageProcessor.test.ts
-
-# Run tests matching a pattern
-npm test -- --testNamePattern="should convert image"
-
-# Watch mode for tests (auto-run on changes)
-npm test -- --watch
-
-# Run tests with coverage
-npm test -- --coverage
-
-# Lint with auto-fix
-npm run lint -- --fix
-
-# Clean build artifacts
-rm -rf dist/
-
-# Full rebuild (clean + build)
-rm -rf dist/ && npm run build
-
-# Test API endpoints
-curl http://localhost:3000/api/health
-```
-
-### Development Cycle Example
-
-```bash
-# 1. Initial setup
-npm install
-
-# 2. Start development server
-npm run dev
-# Server starts at http://localhost:3000
-
-# 3. Open browser and test
-# - Navigate to http://localhost:3000
-# - Upload a test image
-# - Select 80s or 90s style
-# - View the transformed result
-
-# 4. Make code changes in src/
-# - Edit server code, routes, or image processor
-# - Server auto-reloads on file changes
-
-# 5. Test and lint before committing
-npm test
-npm run lint
-
-# 6. Build for production
-npm run build
-npm start
-```
-
-## Project Structure
-
+### 프로젝트 구조
 ```
 src/
-  ├── server.ts                    - Express server entry point
-  ├── routes/
-  │   └── imageRoutes.ts          - API routes for image upload/conversion
-  └── services/
-      └── imageProcessor.ts       - Image transformation logic (Sharp-based)
+├── server.ts                    # Express 서버 진입점
+├── routes/
+│   └── imageRoutes.ts          # API 라우트 (이미지 업로드/변환)
+└── services/
+    └── imageProcessor.ts       # 이미지 변환 로직 (Sharp 기반)
 
-public/                            - Frontend static files
-  ├── index.html                   - Main web interface
-  ├── style.css                    - Styling for web UI
-  └── app.js                       - Frontend JavaScript logic
+public/                          # 프론트엔드 정적 파일
+├── index.html                   # 메인 웹 인터페이스
+├── style.css                    # 스타일링
+└── app.js                       # 프론트엔드 로직
 
-dist/                              - Compiled JavaScript output (generated by tsc)
-uploads/                           - Temporary storage for uploaded/processed images
+dist/                            # 컴파일된 JavaScript 출력
+uploads/                         # 업로드/처리된 이미지 임시 저장소
 ```
 
-## TypeScript Configuration
-
-- **Target**: ES2022 with ES Modules (NodeNext)
-- **Module**: NodeNext (ESM support)
-- **Strict mode**: Enabled with additional strictness options:
-  - `noUncheckedIndexedAccess`
-  - `exactOptionalPropertyTypes`
-  - `verbatimModuleSyntax`
-- **Build outputs**: Source maps, type declarations, and declaration maps are generated
-- **Source root**: `src/`
-- **Output directory**: `dist/`
-
-## API Endpoints
-
-### POST /api/convert
-Uploads and converts an image to retro anime style.
-
-**Request:**
-- Method: `POST`
-- Content-Type: `multipart/form-data`
-- Body:
-  - `image` (file): Image file (JPEG, PNG, WebP, max 10MB)
-  - `style` (string): "80s" or "90s"
-
-**Response:**
-```json
-{
-  "success": true,
-  "message": "Image converted successfully",
-  "imageUrl": "/uploads/retro-1234567890.jpg",
-  "style": "80s"
-}
-```
-
-### GET /api/health
-Health check endpoint.
-
-**Response:**
-```json
-{
-  "status": "ok",
-  "service": "RetroToon API"
-}
-```
-
-## Testing
-
-- **Framework**: Jest with ts-jest preset
-- **Environment**: Node
-- **Execution**: Tests run sequentially (`--runInBand` flag)
-- **Test files**: Use `.test.ts` suffix in the `src/` directory
-- **Best practices**:
-  - Write tests for all new features and utilities
-  - Use descriptive test names: `describe("Feature", () => { it("should do something specific", ...) })`
-  - Run tests before committing code
-
-## Coding Conventions
-
-### File Organization
-- Place all source code in `src/` directory
-- Use `.ts` extension for TypeScript files
-- Use `.test.ts` suffix for test files (e.g., `imageProcessor.test.ts`)
-- Keep test files alongside the code they test
-
-### Naming Conventions
-- **Files**: camelCase (e.g., `imageProcessor.ts`, `userProfile.ts`)
-- **Classes/Interfaces**: PascalCase (e.g., `ImageProcessor`, `UserProfile`)
-- **Functions/Variables**: camelCase (e.g., `convertToRetro`, `userId`)
-- **Constants**: UPPER_SNAKE_CASE (e.g., `MAX_IMAGE_SIZE`, `DEFAULT_STYLE`)
-
-### Code Style
-- Use TypeScript strict mode (already enabled)
-- Always define explicit types for function parameters and return values
-- Prefer `const` over `let`; avoid `var`
-- Use meaningful variable names
-- Add JSDoc comments for public APIs and complex functions
-
-### Example
-```typescript
-/**
- * Converts an image to retro anime style
- * @param imageBuffer - Input image buffer
- * @param style - Retro style variant (80s, 90s)
- * @returns Processed image buffer
- */
-export async function convertToRetroAnime(
-  imageBuffer: Buffer,
-  style: 'retro-80s' | 'retro-90s'
-): Promise<Buffer> {
-  // Implementation here
-  return processedBuffer;
-}
-```
-
-## Troubleshooting
-
-### Build Issues
-
-**Problem**: TypeScript compilation errors
+### 개발 명령어
 ```bash
-# Solution: Check TypeScript version and config
-npm list typescript
-# Ensure tsconfig.json is valid
-```
+# 개발 서버 시작 (자동 새로고침)
+npm run dev
 
-**Problem**: `Cannot find module` errors
-```bash
-# Solution: Clean install dependencies
-rm -rf node_modules package-lock.json
-npm install
-```
-
-### Test Issues
-
-**Problem**: Tests fail with import errors
-```bash
-# Solution: Rebuild the project first
+# 프로젝트 빌드
 npm run build
-npm test
-```
 
-**Problem**: Test timeout errors
-```bash
-# Solution: Increase Jest timeout or fix async handling
-# In test file:
-jest.setTimeout(10000); // 10 seconds
-```
-
-### Runtime Issues
-
-**Problem**: `dist/index.js` not found when running `npm start`
-```bash
-# Solution: Build the project first
-npm run build
+# 프로덕션 서버 시작
 npm start
+
+# 테스트 실행
+npm test
+
+# 린트 실행
+npm run lint
 ```
 
-## Git Workflow
+### API 엔드포인트
+- **POST /api/convert**: 이미지 업로드 및 변환 (80s/90s 스타일)
+- **GET /api/health**: 헬스 체크
 
-### Branch Strategy
-- `main` - Production-ready code
-- `develop` - Development branch for integrating features
-- `feature/*` - Feature branches (e.g., `feature/image-upload`)
-- `fix/*` - Bug fix branches (e.g., `fix/memory-leak`)
-
-### Commit Message Format
-```
-<type>: <short summary>
-
-<optional detailed description>
-```
-
-**Types**:
-- `feat`: New feature
-- `fix`: Bug fix
-- `docs`: Documentation changes
-- `style`: Code style changes (formatting, no logic change)
-- `refactor`: Code refactoring
-- `test`: Adding or updating tests
-- `chore`: Maintenance tasks, dependency updates
-
-**Examples**:
-```bash
-git commit -m "feat: add retro anime image conversion API"
-git commit -m "fix: resolve memory leak in image processing"
-git commit -m "docs: update CLAUDE.md with coding conventions"
-```
-
-### Pull Request Process
-1. Create a feature branch from `develop`
-2. Make your changes and commit
-3. Run tests and linting: `npm test && npm run lint`
-4. Push and create a pull request
-5. Ensure CI passes and code is reviewed
-
-## Deployment
-
-### Preparing for Production
-
-1. **Build the project:**
-   ```bash
-   npm run build
-   ```
-
-2. **Set environment variables:**
-   ```bash
-   export PORT=3000  # or your desired port
-   ```
-
-3. **Start the server:**
-   ```bash
-   npm start
-   ```
-
-### Deployment Platforms
-
-**Recommended platforms for hosting:**
-
-- **Railway** (easiest): Automatic deployment from Git
-  - Supports Node.js out of the box
-  - Free tier available
-  - Auto-scaling
-
-- **Vercel/Netlify**: For serverless deployment
-  - May need to adapt for serverless functions
-  - Free tier available
-
-- **Google Cloud Run / AWS App Runner**: For container deployment
-  - Scalable and production-ready
-  - Docker containerization recommended
-
-- **DigitalOcean/Linode**: Traditional VPS hosting
-  - Full control over environment
-  - Requires server management
-
-### Docker Deployment (Optional)
-
-Create a `Dockerfile`:
-```dockerfile
-FROM node:20-alpine
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci --only=production
-COPY . .
-RUN npm run build
-EXPOSE 3000
-CMD ["npm", "start"]
-```
-
-## Important Notes
-
-- **Image Processing**: Uses Sharp library for fast, high-quality transformations
-- **File Storage**: Uploads are stored in `uploads/` directory (consider cloud storage for production)
-- **Retro Styles**: Two presets available (80s: vibrant/bold, 90s: soft/dreamy)
-- **ESLint**: No custom configuration yet; relies on package defaults
-- **Future Enhancements**:
-  - Advanced AI model integration for more accurate anime conversion
-  - Additional retro style presets (70s, early 2000s)
-  - User accounts and gallery
-  - Cloud storage integration (S3, Cloudinary)
+### 핵심 기능
+- 이미지 업로드 (multer, 10MB 제한)
+- 80s 스타일: 생생한 색상, 높은 대비, 선명함
+- 90s 스타일: 부드러운 색상, 몽환적인 블러
+- 빈티지 필터 (따뜻한 색조, 대비 조정)
